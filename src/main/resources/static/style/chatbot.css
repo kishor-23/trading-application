@@ -1,0 +1,96 @@
+  body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #chat-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #chatbox {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        #messages {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .message {
+            margin-bottom: 15px;
+        }
+        .user-message {
+            font-weight: bold;
+            text-align: right;
+        }
+        .bot-message {
+            text-align: left;
+        }
+        .message p {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .user-message p {
+            background-color: #dcf8c6;
+            margin-right: 10px;
+        }
+        .bot-message p {
+            margin-left: 10px;
+        }
+        #input-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        #userMessage {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+        #sendButton {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        #sendButton:hover {
+            background-color: #0056b3;
+        }
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .header-container h1 {
+            margin: 0;
+            margin-right: 10px;
+                        font-size: 24px;
+        }
+        .header-container img {
+            vertical-align: middle;
+        }
+         header {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            border-bottom: 1px solid #e0e3eb;
+            justify-content: space-between;
+            padding: 12px;
+            flex-direction: row;
+            z-index: 1;
+        }

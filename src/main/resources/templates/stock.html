@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Table with Pagination</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+  .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .header-container h1 {
+            margin: 0;
+            margin-right: 10px;
+                        font-size: 24px;
+        }
+        .header-container img {
+            vertical-align: middle;
+        }
+         header {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            border-bottom: 1px solid #e0e3eb;
+            justify-content: space-between;
+            padding: 12px;
+            flex-direction: row;
+            z-index: 1;
+        }
+.pagination {
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.filter-buttons, .search-bar {
+    margin-bottom: 15px;
+}
+
+.sortable:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.sort-icon {
+    margin-left: 5px;
+}
+
+*, *:before, *:after {
+	box-sizing: border-box
+}
+
+* {
+	margin: 0
+}
+
+body {
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased
+}
+.bdr {
+  border-radius: 6px;
+  overflow: hidden;
+}
+header[data-astro-cid-rafkve5z] {
+	display: flex;
+	width: 100%;
+	align-items: center;
+	border-bottom: 1px solid #e0e3eb;
+	justify-content: space-between;
+	padding: 12px;
+	flex-direction: row;
+	z-index: 1
+}
+
+:root[data-theme=dark] header[data-astro-cid-rafkve5z] {
+	border-bottom: 1px solid #2a2e39
+}
+</style>
+</head>
+<body>
+	<th:block th:include="headernav :: headernav"></th:block>
+<div class="row">
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col-md-8 filter-buttons text-left">
+                <form method="get" action="/stocks" id="filterForm">
+                    <input type="hidden" name="page" value="1">
+                    <input type="hidden" name="itemsPerPage" th:value="${itemsPerPage}">
+                    <input type="hidden" name="searchQuery" th:value="${searchQuery}">
+                    <input type="hidden" name="sortField" id="sortField" th:value="${sortField}">
+                    <input type="hidden" name="sortOrder" id="sortOrder" th:value="${sortOrder}">
+
+                    <button type="submit" class="btn btn-primary" name="filterCategory" value="Small">Small Cap</button>
+                    <button type="submit" class="btn btn-warning" name="filterCategory" value="Medium">Medium Cap</button>
+                    <button type="submit" class="btn btn-success" name="filterCategory" value="Large">Large Cap</button>
+                    <button type="submit" class="btn btn-info" name="filterCategory" value="All">All</button>
+                </form>
+            </div>
+            <div class="col-md-4 search-bar">
+                <form method="get" action="/stocks" id="searchForm">
+                    <input type="text" class="form-control" id="searchInput" name="searchQuery" th:value="${searchQuery}" placeholder="Search for stocks...">
+                </form>
+            </div>
+        </div>
+        <div class="table-responsive rounded">
+            <table class="table table-hover">
+            		    <caption>List of transactions </caption>
+            
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Company Name</th>
+                        <th id="priceHeader" class="sortable" onclick="sortTable('currentStockPrice')">Current Stock Price
+                            <span id="priceSortIcon" class="sort-icon"></span>
+                        </th>
+                        <th>Cap Category</th>
+                        <th colspan="2">stocks</th>
+                    </tr>
+                </thead>
+                <tbody id="stockTable">
+                    <tr th:each="stock : ${listStocks}">
+                      <td th:onclick="'redirectToStockDetail(' + ${stock.stockId} + ')'" th:text="${stock.symbol}"></td>
+<td th:onclick="'redirectToStockDetail(' + ${stock.stockId} + ')'" th:text="${stock.companyName}"></td>
+
+<td th:text="'₹ ' + ${stock.currentStockPrice}"></td>
+                        <td th:text="${stock.capCategory}"></td>
+                        <td>
+                            <button class="btn btn-success" data-toggle="modal" data-target="#buyModal"
+                                    th:data-symbol="${stock.symbol}" 
+                                    th:data-price="${stock.currentStockPrice}"
+                                    th:data-stock-id="${stock.stockId}">
+                                Buy
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#sellModal"
+                                    th:data-symbol="${stock.symbol}" 
+                                    th:data-price="${stock.currentStockPrice}"
+                                    th:data-stock-id="${stock.stockId}">
+                                Sell
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation example">
+    <ul class="pagination">
+        <!-- Previous Button -->
+        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled' : ''">
+            <a class="page-link"
+               th:href="${currentPage > 1 ? '?page=' + (currentPage - 1) + '&itemsPerPage=' + itemsPerPage + '&filterCategory=' + filterCategory + '&searchQuery=' + searchQuery : '#'}">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+
+        <!-- Page Numbers -->
+        <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+            th:classappend="${i == currentPage} ? 'page-item active' : 'page-item'">
+            <a class="page-link"
+               th:href="'?page=' + ${i} + '&itemsPerPage=' + ${itemsPerPage} + '&filterCategory=' + ${filterCategory} + '&searchQuery=' + ${searchQuery}"
+               th:classappend="${i == currentPage} ? 'bg-primary text-white' : ''">
+                [[${i}]]
+            </a>
+        </li>
+
+        <!-- Next Button -->
+        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled' : ''">
+            <a class="page-link"
+               th:href="${currentPage < totalPages ? '?page=' + (currentPage + 1) + '&itemsPerPage=' + itemsPerPage + '&filterCategory=' + filterCategory + '&searchQuery=' + searchQuery : '#'}">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+        </div>
+    </div>
+</div>
+
+<!-- Buy Modal -->
+<div class="modal fade" id="buyModal" tabindex="-1" role="dialog" aria-labelledby="buyModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="StockTransaction" method="post">
+                <input type="hidden" name="transactionType" value="buy">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="buyModalLabel">Buy Stock</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label for="stockSymbol" class="font-weight-bold">Stock Symbol</label>
+                        <input type="text" class="form-control" id="stockSymbol" name="symbol" readonly>
+                    </div>
+                    <div class="form-group mb-3">
+                        <input type="hidden" class="form-control" id="stockId" name="stockId" readonly>
+                    </div>
+                    <div class="form-group mb-3">
+                        <input type="hidden" class="form-control" id="userid" th:value="${user.id}" name="userid" readonly>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="stockPrice" class="font-weight-bold">Current Price</label>
+                        <input type="text" class="form-control" id="stockPrice" name="price" readonly>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="quantity" class="font-weight-bold">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" max="10" value="1" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="totalPrice" class="font-weight-bold">Total Price</label>
+                        <input type="text" class="form-control" id="totalPrice" name="totalPrice" readonly>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Buy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sell Modal -->
+<div class="modal fade" id="sellModal" tabindex="-1" role="dialog" aria-labelledby="sellModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="StockTransaction" method="post">
+                <input type="hidden" name="transactionType" value="sell">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="sellModalLabel">Sell Stock</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label for="sellStockSymbol" class="font-weight-bold">Stock Symbol</label>
+                        <input type="text" class="form-control" id="sellStockSymbol" name="symbol" readonly>
+                    </div>
+                    <div class="form-group mb-3">
+                        <input type="hidden" class="form-control" id="sellStockId" name="stockId" readonly>
+                    </div>
+                    <div class="form-group mb-3">
+                        <input type="hidden" class="form-control" id="userid" th:value="${user.id}" name="userid" readonly>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="sellStockPrice" class="font-weight-bold">Current Price</label>
+                        <input type="text" class="form-control" id="sellStockPrice" name="price" readonly>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="sellQuantity" class="font-weight-bold">Quantity</label>
+                        <input type="number" class="form-control" id="sellQuantity" name="quantity" min="1" max="10" value="1" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="sellTotalPrice" class="font-weight-bold">Total Price</label>
+                        <input type="text" class="form-control" id="sellTotalPrice" name="totalPrice" readonly>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Sell</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.sortable').each(function () {
+            var sortField = $('#sortField').val();
+            var sortOrder = $('#sortOrder').val();
+            if ($(this).attr('id') === sortField + 'Header') {
+                if (sortOrder === 'desc') {
+                    $(this).find('.sort-icon').html('<i class="fas fa-sort-up"></i>');
+                } else if (sortOrder === 'asc') {
+                    $(this).find('.sort-icon').html('<i class="fas fa-sort-down"></i>');
+                }
+            }
+        });
+
+        $('.sortable').click(function () {
+            var sortField = $(this).attr('id').replace('Header', '');
+            var sortOrder = $('#sortOrder').val();
+            if ($('#sortField').val() === sortField) {
+                if (sortOrder === 'asc') {
+                    $('#sortOrder').val('desc');
+                } else {
+                    $('#sortOrder').val('asc');
+                }
+            } else {
+                $('#sortField').val(sortField);
+                $('#sortOrder').val('asc');
+            }
+            $('#filterForm').submit();
+        });
+
+
+      
+    });
+   
+    $('#searchInput').on('keydown', function (e) {
+        if (e.key === 'Enter') {
+            $('#searchForm').submit(); // Manually trigger the form submission
+        }
+    });
+    function redirectToStockDetail(stockId) {
+        window.location.href = "/stockDetails?stockId=" + stockId;
+    }
+</script>
+	<script src="script/stock.js"></script>
+
+<script th:inline="javascript">
+
+	 document.addEventListener('DOMContentLoaded', function () {
+         var message = /*[[${msg}]]*/ '';
+         if (message) {
+             Swal.fire({
+                 title: message.includes('successfully') ? 'Success!' : 'Error!',
+                 text: message,
+                 icon: message.includes('successfully') ? 'success' : 'error',
+                 confirmButtonText: 'OK'
+             });
+         }
+     });
+</script>
+</body>
+</html>

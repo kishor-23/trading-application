@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Top Stocks</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="path/to/your/custom-styles.css">
+    <style>
+      header {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            border-bottom: 1px solid #e0e3eb;
+            justify-content: space-between;
+            padding: 12px;
+            flex-direction: row;
+            z-index: 1;
+        }
+        
+       
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <th:block th:include="headernav :: headernav"></th:block>
+
+
+<br>
+<div class="container mt-4">
+    <h2 class="text-center">Trending Stocks 🔥</h2>
+  
+    <div class="row mb-3">
+        <div class="col-12 d-flex flex-wrap gap-2">
+            <button id="gainersBtn" class="btn btn-outline-success" onclick="showSection('buy', this)">▲ Gainers</button>
+            <button id="losersBtn" class="btn btn-outline-danger" onclick="showSection('sell', this)">▼ Losers</button>
+            <button id="mostActiveBtn" class="btn btn-outline-dark" onclick="showSection('most-active', this)">🔥 Most Active</button>
+         
+        </div>
+    </div>
+
+    <div id="topBuyStocks">
+        <h3 class="mt-4">Top Buy Stocks</h3>
+        <ul class="list-group">
+            <li th:each="stock : ${topBuyStocks}" class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong th:text="${stock.companyName}"></strong>
+                    <small class="text-muted d-block" th:text="${stock.symbol}"></small>
+                </div>
+                <div class="text-end">
+                    <strong th:text="'₹' + ${stock.price}"></strong>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div id="topSellStocks" class="hidden">
+        <h3 class="mt-4">Top Sell Stocks</h3>
+        <ul class="list-group">
+            <li th:each="stock : ${topSellStocks}" class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong th:text="${stock.companyName}"></strong>
+                    <small class="text-muted d-block" th:text="${stock.symbol}"></small>
+                </div>
+                <div class="text-end">
+                    <strong th:text="'₹' + ${stock.price}"></strong>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div id="mostTradedStocks" class="hidden">
+        <h3 class="mt-4">Most Traded Stocks</h3>
+        <ul class="list-group">
+            <li th:each="stock : ${mostTradedStocks}" class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong th:text="${stock.companyName}"></strong>
+                    <small class="text-muted d-block" th:text="${stock.symbol}"></small>
+                </div>
+                <div class="text-end">
+                    <strong th:text="'₹' + ${stock.price}"></strong>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<br>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function showSection(section, button) {
+        // Hide all sections
+        document.getElementById('topBuyStocks').classList.add('hidden');
+        document.getElementById('topSellStocks').classList.add('hidden');
+        document.getElementById('mostTradedStocks').classList.add('hidden');
+
+        // Reset button styles
+        document.getElementById('gainersBtn').classList.remove('btn-success');
+        document.getElementById('gainersBtn').classList.add('btn-outline-success');
+        document.getElementById('losersBtn').classList.remove('btn-danger');
+        document.getElementById('losersBtn').classList.add('btn-outline-danger');
+        document.getElementById('mostActiveBtn').classList.remove('btn-dark');
+        document.getElementById('mostActiveBtn').classList.add('btn-outline-dark');
+
+        // Show selected section and update button style
+        if (section === 'buy') {
+            document.getElementById('topBuyStocks').classList.remove('hidden');
+            button.classList.remove('btn-outline-success');
+            button.classList.add('btn-success');
+        } else if (section === 'sell') {
+            document.getElementById('topSellStocks').classList.remove('hidden');
+            button.classList.remove('btn-outline-danger');
+            button.classList.add('btn-danger');
+        } else if (section === 'most-active') {
+            document.getElementById('mostTradedStocks').classList.remove('hidden');
+            button.classList.remove('btn-outline-dark');
+            button.classList.add('btn-dark');
+        }
+    }
+
+    // Show Top Buy Stocks by default
+    document.addEventListener('DOMContentLoaded', function() {
+        showSection('buy', document.getElementById('gainersBtn'));
+    });
+</script>
+</body>
+</html>

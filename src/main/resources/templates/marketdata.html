@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Data</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Market Data</h1>
+        <div class="row">
+            <div class="col-md-12">
+                <button id="fetchDataBtn" class="btn btn-primary mb-3">Fetch Market Data</button>
+                <div id="marketData" class="alert alert-info" role="alert">
+                    Click the button to fetch market data.
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <script>
+        document.getElementById('fetchDataBtn').addEventListener('click', function() {
+            fetch('http://localhost:9000/market/nse')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('marketData').textContent = data;
+                })
+                .catch(error => {
+                    document.getElementById('marketData').textContent = 'Error fetching market data.';
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+    
+    
+     <h1>Current Stock Market Details</h1>
+    <div id="stock-details"></div>
+
+    <script>
+        async function fetchStockDetails() {
+            const apiKey = 'FYSHYCN2RCIC5MYY';  
+            const symbol = 'MSFT';  
+            const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=1min&apikey=${apiKey}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data['Time Series (1min)']) {
+                    const latestTime = Object.keys(data['Time Series (1min)'])[0];
+                    const latestData = data['Time Series (1min)'][latestTime];
+
+                    document.getElementById('stock-details').innerHTML = `
+                        <p><strong>Symbol:</strong> ${symbol}</p>
+                        <p><strong>Latest Time:</strong> ${latestTime}</p>
+                        <p><strong>Open:</strong> ${latestData['1. open']}</p>
+                        <p><strong>High:</strong> ${latestData['2. high']}</p>
+                        <p><strong>Low:</strong> ${latestData['3. low']}</p>
+                        <p><strong>Close:</strong> ${latestData['4. close']}</p>
+                        <p><strong>Volume:</strong> ${latestData['5. volume']}</p>
+                    `;
+                } else {
+                    document.getElementById('stock-details').innerHTML = '<p>No data available</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching stock details:', error);
+                document.getElementById('stock-details').innerHTML = '<p>Error fetching stock details</p>';
+            }
+        }
+
+        // Fetch stock details every 10 seconds
+        setInterval(fetchStockDetails, 10000);
+
+        // Initial fetch
+        fetchStockDetails();
+    </script>
+</body>
+</html>

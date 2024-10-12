@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="icon" href="assets/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/style/navbar.css}" />
+    <link rel="stylesheet" href="style/live.css">
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    
+</head>
+<body>
+
+</head>
+<body>
+    <header>
+        <div style="display: flex; justify-content: center;">
+            <a href="/profile" style="color: black;">
+                <div class="logo">
+                    <img src="assets/favicon.svg" width="32" height="32" alt="logo">
+                    <p style="padding-top:14px">ChainTrade</p>
+                </div>
+            </a>
+        </div>
+        <div class="hamburger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+        <nav class="nav-bar">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="#" class="active">Live</a></li>
+                <li><a href="/learnToTrade">Learn to trade</a></li>
+                <li th:if="${session.user == null}">
+                    <a href="/register" style="background-color: blue; color: white;">Register</a>
+                </li>
+                <li th:if="${session.user != null}">
+                    <a href="/profile" style="background-color: blue; color: white;">Profile</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+   
+    
+ <div class="container mt-5">
+        <h1 class="text-center">
+            NSE Market Data
+            
+            <a href="https://www.nseindia.com/" target="_blank" rel="noopener">
+                <img src="assets/NSE_Logo.svg" alt="NSE Logo" style="height: 50px; margin-left: 10px;">
+            </a>
+        </h1>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <p>The National Stock Exchange (NSE) of India is the leading stock exchange in the country, based in Mumbai. It was established in 1992 and began operations in 1994, bringing electronic trading to the Indian stock market.</p>
+                <p>The NSE's flagship index, the NIFTY 50, comprises the top 50 companies listed on the exchange across 13 sectors and serves as a benchmark for the Indian equity market. Another key index is the NIFTY Next 50, representing the next 50 largest companies after the NIFTY 50.</p>
+            </div>
+        </div>
+        <div class="row">
+        
+            <div class="col-md-12">
+                <button id="fetchrealDataBtn" class="btn btn-primary mb-3">Fetch Market Data</button>
+                <div id="responseData" class="alert alert-info" role="alert">
+                    Click the button to fetch market data.
+                </div>
+            </div>
+        </div>
+    </div>
+ <div class="container mt-5">
+  <h4 class="text-center">
+           NSE Indices
+        </h4>
+        <div class="row">
+            <div class="col-md-12">
+            
+               <div id="marketData" class="" role="alert">
+                    Click the button to fetch market data.
+                </div>
+            </div>
+        </div>
+
+   
+    <script>
+        document.getElementById('fetchrealDataBtn').addEventListener('click', function() {
+            fetch('http://localhost:9000/market/nse')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('responseData').textContent = data;
+                })
+                .catch(error => {
+                    document.getElementById('responseData').textContent = 'Error fetching market data.';
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+    
+    
+   
+    
+   
+     
+    </div>
+
+   
+    
+    <div id="stock-details"></div>
+
+     <script>
+        function fetchMarketData() {
+            fetch('http://localhost:9000/market/nse')
+                .then(response => response.text())
+                .then(data => {
+                    const marketDataDiv = document.getElementById('marketData');
+                    const container = document.createElement('div');
+                    container.className = 'market-data-container';
+
+                    // Clear the initial message
+                    marketDataDiv.innerHTML = '';
+
+                    // Parse the fetched data assuming it follows a specific format
+                    const lines = data.split('\n');
+
+                    lines.forEach(line => {
+                        if (line.trim()) {
+                            const parts = line.split(':');
+                            if (parts.length === 2) {
+                                const name = parts[0].trim();
+                                const details = parts[1].trim().split('(');
+                                const value = details[0].trim();
+                                const percentage = details[1] ? details[1].replace(')', '').trim() : '';
+
+                                // Determine the indicator class based on the percentage
+                                const indicatorClass = percentage.includes('-') ? 'negative' : 'positive';
+
+                                // Create a new card for each index
+                                const card = document.createElement('div');
+                                card.className = 'market-data-card';
+                                card.innerHTML = `
+                                    <h4>${name}</h4>
+                                    <p class="value">${value}</p>
+                                    <p class="percentage ${indicatorClass}">${percentage}</p>
+                                `;
+
+                                container.appendChild(card);
+                            }
+                        }
+                    });
+
+                    // Append the container to the #marketData div
+                    marketDataDiv.appendChild(container);
+                })
+                .catch(error => {
+                    const marketDataDiv = document.getElementById('marketData');
+                    marketDataDiv.innerHTML = 'Error fetching market data.';
+                    console.error('Error:', error);
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch market data immediately when the page loads
+            fetchMarketData();
+
+            // Set an interval to fetch market data every 10 seconds
+            setInterval(fetchMarketData, 10000);
+        });
+    </script>
+    
+   
+
+    <br>
+
+    <div class="wrapper">
+        <h3 style="text-align:center;">Stocks</h3>
+        <br>
+        <div class="flex-row">
+            <div class="custom-card">
+                <img src="assets/trading-live.jpg" alt="View All Stocks">
+                <div class="custom-card-body">
+                    <h5 class="custom-card-title">View All Stocks</h5>
+                    <p class="custom-card-text">Access a comprehensive list of all available stocks and stay updated with the latest market trends.</p>
+                    <a href="/stocks" class="custom-btn btn-primary">View All Stocks</a>
+                </div>
+            </div>
+            <div class="custom-card">
+                <img src="assets/stock-market-data.webp" alt="View Sample Live Stock">
+                <div class="custom-card-body">
+                    <h5 class="custom-card-title">View Sample Live Stock</h5>
+                    <p class="custom-card-text">Get real-time updates and insights on sample live stock data to make informed decisions.</p>
+                    <a href="/realtimestockdata" class="custom-btn btn-success">View Sample Live Stock</a>
+                </div>
+            </div>
+            <div class="custom-card">
+                <img src="assets/trending.png" alt="View Trending Stock">
+                <div class="custom-card-body">
+                    <h5 class="custom-card-title">View Trending Stock</h5>
+                    <p class="custom-card-text">Stay informed about the trending stocks in the market and make smart trading decisions.</p>
+                    <a href="/trendingstocks" class="custom-btn btn-warning">View Trending Stock</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:fragment="footernav">
+        <div class="d-flex justify-content-start">
+            <span>&copy; 2024 ChainTrade. All rights reserved.</span>
+        </div>
+        <div class="social-icons d-flex justify-content-end">
+            <a href="https://www.facebook.com" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.twitter.com" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.linkedin.com" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="path/to/your/custom-scripts.js"></script>
+    <script>
+        const hamburger = document.querySelector(".hamburger");
+        hamburger.onclick = function(){
+            const navBar = document.querySelector(".nav-bar");
+            navBar.classList.toggle("active");
+        }
+    </script>
+</body>
+</html>

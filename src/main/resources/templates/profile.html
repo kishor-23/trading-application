@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Profile</title>
+
+<link rel="icon" href="assets/favicon.svg" type="image/x-icon">
+<link rel="stylesheet"
+	href="path/to/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" th:href="@{/style/profile.css}" />
+
+</head>
+<body>
+
+	<section style="background-color: #eee;">
+		<div class="container py-5">
+			<div class="row">
+				<div class="col">
+					<nav aria-label="breadcrumb"
+						class="bg-body-tertiary rounded-3 p-3 mb-4">
+						<ol
+							class="breadcrumb mb-0 d-flex justify-content-between align-items-center w-100">
+							<div class="breadcrumb-items d-flex align-items-center">
+								<li class="breadcrumb-item"><a href="/">Home</a></li>
+								<li class="breadcrumb-item active" aria-current="page">User
+									Profile</li>
+							</div>
+							<div class="logo d-flex align-items-center">
+								<img th:src="@{/assets/favicon.svg}" width="32" height="32"
+									alt="logo">
+								<p class="mb-0 ms-2">ChainTrade</p>
+							</div>
+						</ol>
+					</nav>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-4">
+					<div class="card mb-4">
+						<div class="container">
+							<div class="card-body text-center">
+								<img th:src="@{/profilePicture(userId=${session.user.id})}"
+									onclick="openProfilePicturePopup()" alt="avatar"
+									class="rounded-circle img-fluid" style="width: 150px;"
+									th:if="${session.user.profilePicture != null}"> <img
+									th:src="@{/assets/default-user-image.jpg}"
+									onclick="openProfilePicturePopup()" alt="Default Avatar"
+									class="rounded-circle img-fluid" style="width: 150px;"
+									th:unless="${session.user.profilePicture != null}">
+								<p class="my-3" th:text="${session.user.name}"></p>
+
+								<div class="d-flex justify-content-center mb-2">
+									<a class="btn btn-primary" href="logout">Logout</a>
+									<button id="btnUpdateProfilePicture"
+										class="btn btn-outline-primary ms-1">Update Profile
+										Picture</button>
+								</div>
+
+							</div>
+						</div>
+					</div>
+					<div class="card mb-4 mb-lg-0">
+						<div class="card-body p-1">
+							<p style="padding-left: 16px; padding-top: 15px;">Wallet</p>
+							<div
+								class="d-flex justify-content-between align-items-center p-3 ">
+								<p class="mb-0">Total Balance</p>
+								<p class="mb-0">
+									₹<span th:text="${session.user.balance}"></span>
+								</p>
+								<button id="btnOpenAddMoneyForm">Add Money</button>
+							</div>
+						</div>
+					</div>
+
+					<div style="margin-top: 5px">
+						<div class="card mt-2 mb-5 mb-lg-0  ">
+							<div class="card-body">
+								<form action="transactions" method="post">
+									<input type="hidden" name="userId" th:value="${session.user.id}">
+									<button type="submit"
+										style="color: inherit; text-decoration: inherit; border: none; background: none; cursor: pointer;">
+										<span class="text-primary font-italic me-1">Order</span> stock
+										details
+									</button>
+								</form>
+
+								<div class="card-body p-1"
+									style="height: 210px; overflow-y: auto;">
+									<div
+										class="d-flex justify-content-between align-items-center p-3">
+										<p class="mb-0">Company</p>
+										<p class="mb-0">Quantity</p>
+										<p class="mb-0">Total</p>
+										<p class="mb-0">Type</p>
+									</div>
+									<div th:if="${#lists.isEmpty(profile.lastFiveTransactions)}">
+										<div
+											class="d-flex justify-content-center align-items-center p-3">
+											<p class="mb-0">No records</p>
+										</div>
+									</div>
+									<div th:each="transaction : ${profile.lastFiveTransactions}">
+										<div
+											class="d-flex justify-content-between align-items-center p-3">
+											<p class="mb-0" th:text="${transaction.stockSymbol}"></p>
+											<p class="mb-0" th:text="${transaction.shares}"></p>
+											<p class="mb-0">
+												₹<span th:text="${transaction.price}"></span>
+											</p>
+											<p 
+												th:class="${'buy'.equals(transaction.transactionType) ? 'btn bg-success text-white rounded' : 'btn bg-danger text-white rounded'}"
+												th:text="${transaction.transactionType}"></p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-8">
+					<div class="card mb-4">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-sm-3">
+									<p class="mb-0">Full Name</p>
+								</div>
+								<div class="col-sm-9">
+									<p class="text-muted mb-0" th:text="${session.user.name}"></p>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<p class="mb-0">Email</p>
+								</div>
+								<div class="col-sm-9">
+									<p class="text-muted mb-0" th:text="${session.user.email}"></p>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<p class="mb-0">Date of Birth</p>
+								</div>
+								<div class="col-sm-9">
+									<p class="text-muted mb-0" th:text="${session.user.dob}"></p>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<p class="mb-0">Phone</p>
+								</div>
+								<div class="col-sm-9">
+									<p class="text-muted mb-0" th:text="${session.user.phone}"></p>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<p class="mb-0">Pancard No</p>
+								</div>
+								<div class="col-sm-9">
+									<p class="text-muted mb-0" th:text="${session.user.pancardno}"></p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6 mb-1">
+							<div class="card mb-4 p-1">
+								<div class="card-body">
+									<div
+										class="d-flex justify-content-between align-items-center mb-4">
+										<p class="mb-0">
+											<span class="text-primary font-italic me-1">Nominee</span>
+											details
+										</p>
+										 <p class="mb-0">
+                    <!-- Thymeleaf condition to display the "Add Nominee" button -->
+                    <button id="btnOpenNomineeForm" th:if="${#lists.size(profile.nominees) <4}">Add Nominee</button>
+                </p>
+									</div>
+									<div class="card-body p-1 mb-2"
+										style="height: 300px; overflow-y: auto;">
+
+										<!-- Thymeleaf conditional check for empty nominees list -->
+										<div th:if="${#lists.isEmpty(profile.nominees)}"
+											class="d-flex justify-content-center align-items-center p-3">
+											<p class="mb-0">No records</p>
+										</div>
+
+										<!-- Thymeleaf iteration over nominees list -->
+										<div th:each="nominee : ${profile.nominees}">
+											<div class="row border mt-2 md-2 mx-1 rounded">
+												<div class="col-sm-4 mt-2 md-9">
+													<p class="mb-0">Name</p>
+												</div>
+												<div class="col-sm-8 mt-2">
+													<!-- Thymeleaf expression to print nominee name -->
+													<p class="text-muted mb-0" th:text="${nominee.nomineeName}"></p>
+												</div>
+
+												<div class="col-sm-4">
+													<p class="mb-0">Relation</p>
+												</div>
+												<div class="col-sm-8">
+													<!-- Thymeleaf expression to print nominee relationship -->
+													<p class="text-muted mb-0"
+														th:text="${nominee.relationship}"></p>
+												</div>
+
+												<div class="col-sm-4">
+													<p class="mb-0">Phone</p>
+												</div>
+												<div class="col-sm-8 mb-0 p-1">
+													<!-- Thymeleaf expression to print nominee phone number -->
+													<p class="text-muted mb-0" th:text="${nominee.phoneNo}"></p>
+												</div>
+
+												<div class="col-sm-12 d-flex justify-content-end mb-2">
+													<!-- Thymeleaf attributes for data and event handling -->
+													<button class="btn btn-primary btnEditNominee"
+														th:attr="data-id=${nominee.nomineeId}, data-name=${nominee.nomineeName}, data-relationship=${nominee.relationship}, data-phone=${nominee.phoneNo}"
+														onclick="editNominee(event)">Edit</button>
+													<button class="btn btn-danger ms-1 btnDeleteNominee"
+														th:attr="data-id=${nominee.nomineeId}"
+														onclick="deleteNominee(event)">Delete</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="card mb-4 mb-md-0">
+
+								<div class="card-body">
+									<a th:href="@{/stocks}"
+										style=" color: inherit; text-decoration: inherit;">
+										<p class="mb-4">
+											<span class="text-primary font-italic me-1">Stock</span>
+											details
+										</p>
+									</a>
+									<p class="mb-1" style="font-size: .77rem;">Small cap</p>
+									<div class="progress rounded" style="height: 5px;">
+										<div class="progress-bar" role="progressbar"
+											th:style="'width: ' + ${profile.smallCapPercentage} + '%;'"
+											aria-valuenow="${profile.smallCapPercentage}" aria-valuemin="0"
+											aria-valuemax="100" data-toggle="tooltip"
+											th:title="${profile.smallCapPercentage} + '%'"></div>
+									</div>
+									<p class="mt-4 mb-1" style="font-size: .77rem;">Medium cap</p>
+									<div class="progress rounded" style="height: 5px;">
+										<div class="progress-bar" role="progressbar"
+											th:style="'width: ' + ${profile.mediumCapPercentage} + '%;'"
+											aria-valuenow="${profile.mediumCapPercentage}" aria-valuemin="0"
+											aria-valuemax="100" data-toggle="tooltip"
+											th:title="${profile.mediumCapPercentage} + '%'"></div>
+									</div>
+									<p class="mt-4 mb-1" style="font-size: .77rem;">Large cap</p>
+									<div class="progress rounded" style="height: 5px;">
+										<div class="progress-bar" role="progressbar"
+											th:style="'width: ' + ${profile.largeCapPercentage} + '%;'"
+											aria-valuenow="${profile.largeCapPercentage}" aria-valuemin="0"
+											aria-valuemax="100" data-toggle="tooltip"
+											th:title="${profile.largeCapPercentage} + '%'"></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="card mt-2 mb-5 mb-lg-0"
+								style="height: 300px; overflow-y: auto;">
+								<div class="card-body">
+									<a th:href="@{/portfolio}"
+										style=" color: inherit; text-decoration: inherit;">
+										<p class="mb-4">
+											<span class="text-primary font-italic me-1">Portfolio</span>
+											details
+										</p>
+									</a>
+									<div
+										class="d-flex justify-content-between align-items-center p-3">
+										<p class="mb-0">Symbol</p>
+										<p class="mb-0">Quantity</p>
+										<p class="mb-0">Invested</p>
+										<p class="mb-0">Total Cost</p>
+									</div>
+
+									<div
+										th:if="${ #lists.isEmpty(profile.portfolios)}"
+										class="d-flex justify-content-center align-items-center p-3">
+										<p class="mb-0">No records</p>
+									</div>
+
+									<div th:each="portfolio : ${profile.portfolios}"
+										class="d-flex justify-content-between align-items-center p-3">
+										<p class="mb-0" th:text="${portfolio.symbol}"></p>
+										<p class="mb-0" th:text="${portfolio.quantity}"></p>
+										<p class="mb-0" th:text="${portfolio.buyedPrice}"></p>
+										<p class="mb-0" th:text="${portfolio.total}"></p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Update Profile Picture Form -->
+	<div class="form-popup-bg" id="updateProfilePicturePopup">
+    <div class="form-container">
+        <span class="close-button" id="btnCloseUpdateProfilePicture">&times;</span>
+        <h1>Update Profile Picture</h1>
+        <form action="profilePicture" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="userId" th:value="${session.user.id}">
+            <div class="form-group">
+                <label for="profilePicture">Select a new profile picture:</label>
+                <input
+                    type="file"
+                    id="profilePicture"
+                    name="profilePicture"
+                    class="form-control"
+                    required
+                >
+            </div>
+            <button type="submit">Update</button>
+        </form>
+    </div>
+</div>
+
+<!-- Add Nominee Form -->
+<div class="form-popup-bg" id="addNomineePopup">
+    <div class="form-container">
+        <span class="close-button" id="btnCloseNomineeForm">&times;</span>
+        <h1>Add Nominee</h1>
+        <form th:action="@{/nominee/add}" th:object="${nominee}" method="post">
+            <input type="hidden" name="userId" th:value="${session.user.id}"> 
+            <input type="hidden" name="action" value="add">
+            <div class="form-group">
+                <label for="nomineeName">Nominee Name:</label>
+                <input type="text" id="nomineeName" name="nomineeName" class="form-control"
+                    pattern="[A-Za-z\s]+" required>
+                <div class="invalid-feedback">Nominee Name should contain only letters and spaces.</div>
+            </div>
+            <div class="form-group">
+                <label for="relationship">Relationship:</label>
+                <select id="relationship" name="relationship" class="form-control" required>
+                    <option value="">Select Relationship</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="Parent">Parent</option>
+                    <option value="Sibling">Sibling</option>
+                    <option value="Child">Child</option>
+                </select>
+                <div class="invalid-feedback">Relationship is required.</div>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phoneNo" class="form-control"
+                    pattern="[6-9][0-9]{9}" title="Please enter a valid 10-digit phone number without leading zeros"
+                    required>
+                <div class="invalid-feedback">Phone number should be a valid 10-digit number starting with 6-9.</div>
+            </div>
+            <button type="submit">Add Nominee</button>
+        </form>
+    </div>
+</div>
+
+<!-- Add Money Form -->
+<div class="form-popup-bg" id="addMoneyPopup">
+    <div class="form-container">
+        <span class="close-button" id="btnCloseAddMoneyForm">&times;</span>
+        <h1>Add Money</h1>
+        <form th:action="@{/addMoney}" method="post" id="addMoneyForm">
+            <input type="hidden" name="userId" th:value="${session.user.id}">
+            <div class="form-group">
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" name="amount" min="1" max="100000" class="form-control" required>
+                <div class="invalid-feedback">Amount must be between 1 and 100000.</div>
+            </div>
+            <div class="form-group">
+                <label for="cardNumber">Card Number:</label>
+                <input type="text" id="cardNumber" name="cardNumber" maxlength="16" pattern="\d{16}"
+                    class="form-control" title="16 digits" required>
+                <div class="invalid-feedback">Card Number must be exactly 16 digits.</div>
+            </div>
+            <div class="form-group">
+                <label for="expiry">Expiry Date (MM/YYYY):</label>
+                <input type="text" id="expiry" name="expiry" pattern="(0[1-9]|1[0-2])\/[0-9]{4}"
+                    placeholder="MM/YYYY" class="form-control" required>
+                <div class="invalid-feedback">Expiry date must be in MM/YYYY format.</div>
+            </div>
+            <div class="form-group">
+                <label for="cvv">CVV:</label>
+                <input type="text" id="cvv" name="cvv" maxlength="3" pattern="\d{3}" class="form-control" required>
+                <div class="invalid-feedback">CVV must be exactly 3 digits.</div>
+            </div>
+            <button type="submit">Add Money</button>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Nominee Form -->
+<div class="form-popup-bg" id="editNomineePopup" style="display: none;">
+    <div class="form-container">
+        <span class="close-button" id="btnCloseEditNomineeForm">&times;</span>
+        <h1>Edit Nominee</h1>
+        <form id="editNomineeForm" action="/nominee/update" method="post">
+            <input type="hidden" name="action" value="update"> 
+            <input type="hidden" name="nomineeId" id="editNomineeId"> 
+            <input type="hidden" name="userId" th:value="${session.user.id}">
+            <div class="form-group">
+                <label for="editNomineeName">Nominee Name:</label>
+                <input type="text" id="editNomineeName" name="nomineeName" class="form-control"
+                    pattern="[A-Za-z\s]+" title="Nominee Name should contain only letters and spaces."
+                    required>
+                <div class="invalid-feedback">Nominee Name should contain only letters and spaces.</div>
+            </div>
+            <div class="form-group">
+                <label for="editRelationship">Relationship:</label>
+                <select id="editRelationship" name="relationship" class="form-control" required>
+                    <option value="">Select Relationship</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="Parent">Parent</option>
+                    <option value="Sibling">Sibling</option>
+                    <option value="Child">Child</option>
+                </select>
+                <div class="invalid-feedback">Relationship is required.</div>
+            </div>
+            <div class="form-group">
+                <label for="editPhone">Phone:</label>
+                <input type="text" id="editPhone" name="phoneNo" class="form-control"
+                    pattern="[6-9][0-9]{9}" title="Phone number should be a valid 10-digit number starting with 6-9."
+                    required>
+                <div class="invalid-feedback">Phone number should be a valid 10-digit number starting with 6-9.</div>
+            </div>
+            <button type="submit">Update Nominee</button>
+        </form>
+    </div>
+</div>
+
+
+	<!-- Delete Nominee Form -->
+	<div class="form-popup-bg" id="deleteNomineePopup">
+		<div class="form-container">
+			<span class="close-button" id="btnCloseDeleteNomineeForm">&times;</span>
+			<h1>Delete Nominee</h1>
+			<form id="deleteNomineeForm" th:action="@{/nominee/delete}"
+				method="post">
+				<input type="hidden" name="action" value="delete"> <input
+					type="hidden" name="nomineeId" id="deleteNomineeId"> <input
+					type="hidden" name="userId" th:value="${session.user.id}">
+				<p>Are you sure you want to delete this nominee?</p>
+				<button type="submit" class="btn btn-danger">Delete</button>
+				<button type="button" class="btn btn-secondary"
+					id="btnCancelDeleteNominee">Cancel</button>
+			</form>
+		</div>
+	</div>
+	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	
+	<script th:inline="javascript">
+	 document.addEventListener('DOMContentLoaded', function () {
+         var message = /*[[${msg}]]*/ '';
+         if (message) {
+             Swal.fire({
+                 title: message.includes('successfully') ? 'Success!' : 'Error!',
+                 text: message,
+                 icon: message.includes('successfully') ? 'success' : 'error',
+                 confirmButtonText: 'OK'
+             });
+         }
+     });
+</script>
+<script src="script/profile.js" th:external="javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+</body>
+</html>

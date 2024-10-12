@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" th:href="@{/style/stockdetails.css}" />
+<title>Stocks details</title>
+</head>
+<body>
+	<div id="stockSymbol" th:text="${symbol}" style="display: none;"></div>
+	<th:block th:include="headernav :: headernav"></th:block>
+
+	<main>
+		<section id="symbol-info">
+			<script>
+				document.addEventListener('DOMContentLoaded',
+						function() {
+							// Get the symbol value from the hidden div
+							window.stockSymbol = document
+									.getElementById('stockSymbol').textContent
+									.trim();
+						});
+			</script>
+			<!-- TradingView Widget BEGIN -->
+			<div class="tradingview-widget-container">
+				<div class="tradingview-widget-container__widget"></div>
+				<script type="text/javascript">
+					(function() {
+						var config = {
+							"symbol" : "[[${symbol}]]", // Thymeleaf or other templating engine placeholder
+							"width" : "100%",
+							"locale" : "en",
+							"colorTheme" : "light",
+							"isTransparent" : true
+						};
+
+						var script = document.createElement("script");
+						script.type = "text/javascript";
+						script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js";
+						script.async = true;
+						script.innerHTML = JSON.stringify(config);
+						document.querySelector(
+								".tradingview-widget-container__widget")
+								.appendChild(script);
+					})();
+				</script>
+			</div>
+			<!-- TradingView Widget END -->
+
+			<div class="d-flex justify-content-end p-2">
+				<div class="mr-2">
+					<button class="btn btn-success" data-toggle="modal"
+						data-target="#buyModal" th:data-symbol="${stock.symbol}"
+						th:data-price="${stock.currentStockPrice}"
+						th:data-stock-id="${stock.stockId}">Buy</button>
+				</div>
+				<div>
+					<button class="btn btn-danger" data-toggle="modal"
+						data-target="#sellModal" th:data-symbol="${stock.symbol}"
+						th:data-price="${stock.currentStockPrice}"
+						th:data-stock-id="${stock.stockId}">Sell</button>
+				</div>
+			</div>
+
+			<!-- TradingView Widget END -->
+		</section>
+		<section id="advanced-chart">
+			<!-- TradingView Widget BEGIN -->
+			<div class="tradingview-widget-container"
+				style="height: 100%; width: 100%">
+				<div id="tradingview_ae7da"
+					style="height: calc(100% - 32px); width: 100%"></div>
+				<script type="text/javascript"
+					src="https://s3.tradingview.com/tv.js"></script>
+				<script type="text/javascript">
+					(function() {
+						// Create a new TradingView widget instance
+						const tradingViewWidget = new TradingView.widget({
+							autosize : true,
+							symbol : " [[${symbol}]]", // Replace with your actual symbol
+							interval : 'D',
+							timezone : 'Etc/UTC',
+							theme : 'light',
+							style : '1',
+							locale : 'en',
+							hide_side_toolbar : false,
+							allow_symbol_change : true,
+							studies : [ 'STD;MACD' ],
+							container_id : 'tradingview_ae7da',
+						});
+
+						console.log('TradingView widget initialized:',
+								tradingViewWidget);
+					})();
+				</script>
+
+			</div>
+			<!-- TradingView Widget END -->
+		</section>
+		<section id="company-profile">
+			<!-- TradingView Widget BEGIN -->
+			<div class="tradingview-widget-container">
+				<div class="tradingview-widget-container__widget"
+					style="height: 100vh;"></div>
+				<script type="text/javascript">
+					(function() {
+						var config = {
+							"width" : "100%",
+							"height" : "100%",
+							"colorTheme" : "light",
+							"isTransparent" : true,
+							"symbol" : "[[${symbol}]]",
+							"locale" : "en"
+						};
+
+						var script = document.createElement("script");
+						script.type = "text/javascript";
+						script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js";
+						script.async = true;
+						script.innerHTML = JSON.stringify(config);
+						document
+								.querySelector(
+										"#company-profile .tradingview-widget-container__widget")
+								.appendChild(script);
+					})();
+				</script>
+			</div>
+			<!-- TradingView Widget END -->
+		</section>
+
+		<!-- TradingView Widget BEGIN -->
+		<section id="advanced-chart">
+			<div class="tradingview-widget-container">
+				<div class="tradingview-widget-container__widget"
+					style="height: 90vh;"></div>
+				<script type="text/javascript">
+					(function() {
+						var config = {
+							"symbols" : [ [ "[[${symbol}]]", "[[${symbol}]]|1Y" ] ],
+							"chartOnly" : false,
+							"width" : "100%",
+							"height" : "100%",
+							"locale" : "en",
+							"colorTheme" : "light",
+							"autosize" : true,
+							"showVolume" : false,
+							"showMA" : false,
+							"hideDateRanges" : false,
+							"hideMarketStatus" : false,
+							"hideSymbolLogo" : false,
+							"scalePosition" : "right",
+							"scaleMode" : "Normal",
+							"fontFamily" : "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
+							"fontSize" : "10",
+							"noTimeScale" : false,
+							"valuesTracking" : "1",
+							"changeMode" : "price-and-percent",
+							"chartType" : "area",
+							"maLineColor" : "#2962FF",
+							"maLineWidth" : 1,
+							"maLength" : 9,
+							"lineWidth" : 2,
+							"lineType" : 0,
+							"dateRanges" : [ "1d|1", "1m|30", "3m|60",
+									"12m|1D", "60m|1W", "all|1M" ]
+						};
+
+						var script = document.createElement("script");
+						script.type = "text/javascript";
+						script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
+						script.async = true;
+						script.innerHTML = JSON.stringify(config);
+						document
+								.querySelector(
+										"#advanced-chart .tradingview-widget-container__widget")
+								.appendChild(script);
+					})();
+				</script>
+			</div>
+		</section>
+		<br>
+		<section id="fundamental-data">
+			<div class="tradingview-widget-container">
+				<div class="tradingview-widget-container__widget"></div>
+				<script type="text/javascript">
+					(function() {
+						var config = {
+							"colorTheme" : "light",
+							"isTransparent" : true,
+							"largeChartUrl" : "",
+							"displayMode" : "regular",
+							"width" : "100%",
+							"height" : 775,
+							"symbol" : "[[${symbol}]]",
+							"locale" : "en"
+						};
+
+						var script = document.createElement("script");
+						script.type = "text/javascript";
+						script.src = "https://s3.tradingview.com/external-embedding/embed-widget-financials.js";
+						script.async = true;
+						script.innerHTML = JSON.stringify(config);
+						document
+								.querySelector(
+										"#fundamental-data .tradingview-widget-container__widget")
+								.appendChild(script);
+					})();
+				</script>
+			</div>
+		</section>
+
+		<section id="technical-analysis">
+			<div class="tradingview-widget-container">
+				<div class="tradingview-widget-container__widget"
+					style="height: 90vh;"></div>
+				<script type="text/javascript">
+					(function() {
+						var config = {
+							"interval" : "15m",
+							"width" : "100%",
+							"isTransparent" : true,
+							"height" : "100%",
+							"symbol" : "[[${symbol}]]",
+							"showIntervalTabs" : true,
+							"displayMode" : "single",
+							"locale" : "en",
+							"colorTheme" : "light"
+						};
+
+						var script = document.createElement("script");
+						script.type = "text/javascript";
+						script.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
+						script.async = true;
+						script.innerHTML = JSON.stringify(config);
+						document
+								.querySelector(
+										"#technical-analysis .tradingview-widget-container__widget")
+								.appendChild(script);
+					})();
+				</script>
+			</div>
+		</section>
+
+		<section id="top-stories">
+			<div class="tradingview-widget-container">
+				<div class="tradingview-widget-container__widget"></div>
+				<script type="text/javascript">
+					(function() {
+						var config = {
+							"feedMode" : "symbol",
+							"symbol" : "[[${symbol}]]",
+							"colorTheme" : "light",
+							"isTransparent" : true,
+							"displayMode" : "regular",
+							"width" : "100%",
+							"height" : 600,
+							"locale" : "en"
+						};
+
+						var script = document.createElement("script");
+						script.type = "text/javascript";
+						script.src = "https://s3.tradingview.com/external-embedding/embed-widget-timeline.js";
+						script.async = true;
+						script.innerHTML = JSON.stringify(config);
+						document
+								.querySelector(
+										"#top-stories .tradingview-widget-container__widget")
+								.appendChild(script);
+					})();
+				</script>
+			</div>
+		</section>
+
+
+	</main>
+
+
+
+
+	<!-- Buy Modal -->
+	<div class="modal fade" id="buyModal" tabindex="-1" role="dialog"
+		aria-labelledby="buyModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<form action="StockTransaction" method="post">
+					<input type="hidden" name="transactionType" value="buy">
+					<div class="modal-header bg-primary text-white">
+						<h5 class="modal-title" id="buyModalLabel">Buy Stock</h5>
+						<button type="button" class="close text-white"
+							data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<label for="stockSymbol" class="font-weight-bold">Stock
+								Symbol</label> <input type="text" class="form-control" id="stockSymbol"
+								name="symbol" readonly>
+						</div>
+						<div class="form-group mb-3">
+							<input type="hidden" class="form-control" id="stockId"
+								name="stockId" readonly>
+						</div>
+						<div class="form-group mb-3">
+							<input type="hidden" class="form-control" id="userid"
+								th:value="${session.user.getId()}" name="userid" readonly>
+						</div>
+						<div class="form-group mb-3">
+							<label for="stockPrice" class="font-weight-bold">Current
+								Price</label> <input type="text" class="form-control" id="stockPrice"
+								name="price" readonly>
+						</div>
+						<div class="form-group mb-3">
+							<label for="quantity" class="font-weight-bold">Quantity</label> <input
+								type="number" class="form-control" id="quantity" name="quantity"
+								min="1" max="10" value="1" required>
+						</div>
+						<div class="form-group mb-3">
+							<label for="totalPrice" class="font-weight-bold">Total
+								Price</label> <input type="text" class="form-control" id="totalPrice"
+								name="totalPrice" readonly>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary">Buy</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Sell Modal -->
+	<div class="modal fade" id="sellModal" tabindex="-1" role="dialog"
+		aria-labelledby="sellModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<form action="StockTransaction" method="post">
+					<input type="hidden" name="transactionType" value="sell">
+
+					<div class="modal-header bg-danger text-white">
+						<h5 class="modal-title" id="sellModalLabel">Sell Stock</h5>
+						<button type="button" class="close text-white"
+							data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<label for="sellStockSymbol" class="font-weight-bold">Stock
+								Symbol</label> <input type="text" class="form-control"
+								id="sellStockSymbol" name="symbol" readonly>
+						</div>
+						<div class="form-group mb-3">
+							<input type="hidden" class="form-control" id="sellStockId"
+								name="stockId" readonly>
+						</div>
+						<div class="form-group mb-3">
+							<input type="hidden" class="form-control" id="sellUserId"
+								th:value="${session.user.getId()}" name="userid" readonly>
+						</div>
+						<div class="form-group mb-3">
+							<label for="sellStockPrice" class="font-weight-bold">Current
+								Price</label> <input type="text" class="form-control"
+								id="sellStockPrice" name="price" readonly>
+						</div>
+						<div class="form-group mb-3">
+							<label for="sellQuantity" class="font-weight-bold">Quantity</label>
+							<input type="number" class="form-control" id="sellQuantity"
+								name="quantity" min="1" max="10" value="1" required>
+						</div>
+						<div class="form-group mb-3">
+							<label for="sellTotalPrice" class="font-weight-bold">Total
+								Price</label> <input type="text" class="form-control"
+								id="sellTotalPrice" name="totalPrice" readonly>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-danger">Sell</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="script/stock.js"></script>
+</body>
+</html>

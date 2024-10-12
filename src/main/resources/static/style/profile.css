@@ -1,0 +1,105 @@
+/* Popup */
+.popup {
+	display: none;
+	position: fixed;
+	z-index: 9999;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Popup Content */
+.popup-content {
+	position: relative;
+	margin: auto;
+	width: 80%;
+	padding-top: 20px;
+	max-width: 600px;
+}
+
+/* Close Button */
+.close {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	color: white;
+	font-size: 24px;
+	font-weight: bold;
+	cursor: pointer;
+}
+/* Custom scrollbar design */
+::-webkit-scrollbar {
+	width: 0;
+}
+
+.form-popup-bg, .form-popup-bg-add-money, .modal {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 9999;
+}
+
+.form-container {
+	background-color: white;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+	padding: 20px;
+	width: 300px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.close-button {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+}
+
+.form-container h1 {
+	margin-top: 0;
+}
+
+.form-group {
+	margin-bottom: 15px;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 5px;
+}
+
+.form-control {
+	width: 100%;
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+.form-control:focus {
+	outline: none;
+	border-color: #007bff;
+}
+
+button {
+	background-color: #007bff;
+	color: white;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: #0056b3;
+}

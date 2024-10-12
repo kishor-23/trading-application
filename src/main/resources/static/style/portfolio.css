@@ -1,0 +1,211 @@
+  /* use :host (local) or :root (global) */
+:root {
+    --slick-header-menu-display: inline-block;
+    --slick-primary-color-dark: pink;
+    --slick-header-filter-row-border-bottom: 2px solid pink;
+}
+/* Container styling */
+#myGrid {
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+  outline: 0;
+  position: relative;
+  border: 1px solid #dee2e6;
+  border-radius: .25rem;
+  background-color: #ffffff;
+}
+
+/* Header styling */
+.slick-header.ui-state-default {
+  overflow: hidden;
+  position: relative;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  height: 35px; /* Adjust height as needed */
+}
+
+.slick-header-columns {
+  position: relative;
+  white-space: nowrap;
+  cursor: default;
+  overflow: hidden;
+}
+
+.slick-header-column.ui-state-default {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+  margin: 0;
+  padding: 8px;
+  border-right: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  min-width: 80px; /* Minimum width to ensure readability */
+  box-sizing: border-box; /* Include padding and border in width calculation */
+  height: 100%; /* Ensure the header column takes full height */
+}
+
+/* Row and cell styling */
+.slick-row {
+  position: absolute;
+  border: 0;
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.slick-cell {
+  position: absolute;
+  border: 1px solid transparent;
+  border-right: 1px dotted #dee2e6;
+  border-bottom-color: #dee2e6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  padding: 8px;
+  margin: 0;
+  white-space: nowrap;
+  cursor: default;
+  box-sizing: border-box; /* Include padding and border in width calculation */
+}
+
+/* Adjust grid viewport and scrolling */
+.slick-viewport {
+  width: 100%;
+  overflow: auto;
+  outline: 0;
+  position: relative;
+  height: calc(100% - 35px); /* Adjust height to fit container minus header height */
+}
+
+
+        html, body, .intro {
+            height: 100%;
+        }
+        .card {
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 400px;
+            padding: 20px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 20px auto;
+            height: 400px;
+        }
+        .portfolio-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .portfolio {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            width: 100%;
+            max-width: 400px;
+            height: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container canvas {
+            width: 100% !important;
+            height: 90% !important;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .label {
+            color: #8e8e8e;
+            font-size: 16px;
+        }
+        .value {
+            color: #000;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .separator {
+            border-top: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+        .pnl, .percentage {
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .pnl {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .percentage {
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            padding: 5px 10px;
+            margin-left: 10px;
+        }
+        .pnl.positive, .percentage.positive {
+            color: #388e3c; /* green color for profit */
+            background-color: #e8f5e9; /* light green background for profit */
+        }
+        .pnl.negative, .percentage.negative {
+            color: #d32f2f; /* red color for loss */
+            background-color: #fbeaea; /* light red background for loss */
+        }
+        ::-webkit-scrollbar {
+            width: 0;
+        }
+        .gradient-custom-1 {
+            background: #4758eb;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        table td, table th {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        tbody td {
+            font-weight: 500;
+            color: #999999;
+        }
+        .fa-caret-up {
+            color: green;
+            font-size: 17px;
+        }
+        .fa-caret-down {
+            color: red;
+            font-size: 17px;
+        }
+        .header-fixed {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 1;
+        }
+        .scrollable-table {
+            max-height: 400px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+        header[data-astro-cid-rafkve5z] {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            border-bottom: 1px solid #e0e3eb;
+            justify-content: space-between;
+            padding: 10px;
+            flex-direction: row;
+            z-index: 1;
+        }

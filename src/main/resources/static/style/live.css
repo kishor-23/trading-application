@@ -1,0 +1,168 @@
+
+
+a { 
+  text-decoration: none; 
+
+  
+} 
+.btn-pill {
+    border-radius: 50px;
+    padding: 5px 15px;
+}
+
+.stock-item {
+    border: none;
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+}
+
+.stock-logo {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.gain-icon {
+    color: #28a745;
+}
+
+.loss-icon {
+    color: #dc3545;
+}
+
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.flex-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.custom-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 300px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.custom-card:hover {
+    transform: translateY(-10px);
+}
+
+.custom-card img {
+    width: 100%;
+    height: auto;
+}
+
+.custom-card-body {
+    padding: 20px;
+}
+
+.custom-card-title {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
+.custom-card-text {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.custom-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 0.875rem;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.custom-btn:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+.market-data-card .percentage.negative {
+    color: red;
+}
+.market-data-card .percentage.positive {
+    color: green;
+}
+
+
+              footer {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            border-top: 1px solid #e0e3eb;
+            justify-content: space-between;
+            padding: 12px;
+            flex-direction: row;
+            z-index: 1;
+            background-color: #f8f9fa;
+        }
+        :root[data-theme=dark] footer {
+            border-top: 1px solid #2a2e39;
+            background-color: #343a40;
+            color: white;
+        }
+        .social-icons a {
+            color: inherit;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .social-icons a:hover {
+            color: #007bff;
+        }
+     /* New styles for market data cards */
+        .market-data-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+      .market-data-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s; /* Add transition for smooth effect */
+}
+
+.market-data-card:hover {
+    transform: translateY(-5px); /* Move the card slightly up */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Increase the shadow */
+}
+
+        
+        .market-data-card h4 {
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .market-data-card p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .market-data-card .value {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .market-data-card .percentage {
+            font-size: 16px;
+            color: #777;
+        }

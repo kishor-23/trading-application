@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<title>Chat with Gemini Bot</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" th:href="@{/style/chatbot.css}" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+	<th:block th:include="headernav :: headernav"></th:block>
+
+	<div id="chat-container">
+		<div class="header-container">
+			<h1>Learn with Gemini Bot</h1>
+			<img src="assets/Google_gemini_logo.svg" width="40" alt="logo">
+		</div>
+		<div id="chatbox">
+			<ul id="messages"></ul>
+		</div>
+		<div id="input-container">
+			<input type="text" id="userMessage"
+				placeholder="Type your message here...">
+			<button id="sendButton">Send</button>
+		</div>
+	</div>
+	<script>
+        $(document).ready(function() {
+            $('#sendButton').click(function() {
+                sendMessage();
+            });
+
+            $('#userMessage').keypress(function(event) {
+                if (event.which == 13) {
+                    sendMessage();
+                }
+            });
+
+            function sendMessage() {
+                var userMessage = $('#userMessage').val();
+                if (userMessage.trim() === "") {
+                    return;
+                }
+                $('#messages').append('<li class="message user-message"><p>' + userMessage + '</p></li>');
+                $('#userMessage').val('');
+                $.ajax({
+                    type: "POST",
+                    url: "/api/chat",
+                    contentType: "application/json",
+                    data: JSON.stringify({ message: userMessage }),
+                    success: function(response) {
+                        var responseObject = JSON.parse(response);
+                        var botMessage = responseObject.candidates[0].content.parts[0].text;
+                        botMessage = botMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                        botMessage = botMessage.replace(/(##\s*(.*?)\n)/g, '<h2>$2</h2>'); // Format headers
+                        botMessage = botMessage.replace(/(\*\s(.*?))(\n|$)/g, '<li>$2</li>'); // Format unordered list items
+                        botMessage = botMessage.replace(/(\d+\.\s(.*?))(\n|$)/g, '<li>$2</li>'); // Format ordered list items
+                        botMessage = botMessage.replace(/<\/li>\s<li>/g, '</li><li>'); // Ensure list items are displayed properly
+                        botMessage = botMessage.replace(/<li>/, '<ol><li>'); // Start unordered list
+                        botMessage = botMessage.replace(/<\/li>$/, '</li></ol>'); // End unordered list
+                        $('#messages').append('<li class="message bot-message"><p>' + botMessage + '</p></li>');
+                        $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+                    },
+                    error: function() {
+                        $('#messages').append('<li class="message bot-message"><p>An error occurred while processing your request.</p></li>');
+                        $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

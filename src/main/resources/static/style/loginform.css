@@ -1,0 +1,241 @@
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+
+
+body{
+    background-image: url("");
+
+    background-color: #2b06c1;
+  font-family: 'Poppins', sans-serif;
+
+
+    
+
+}
+.logo{
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+
+.regform{ 
+
+    width:430px;
+    background-color:white;
+    padding: 20px 20px 20px 20px;
+
+
+    margin: 20px auto ;
+    color:black;
+  
+    font-size: 20px;
+    border-radius: 10px ;
+    
+}
+.regformf{
+  width:480px;
+    background-color:white;
+
+    margin: 20px auto ;
+    color:black;
+    padding: 20px 20px 20px 20px;
+    font-size: 20px;
+    border-radius: 10px ;
+
+}
+
+
+ #heading{
+    margin-top:0;
+    color:black;
+    text-align: center;
+    font-size: 28px;
+    
+}
+
+.input input, input[type="file"]{
+    width:100%;
+    font-size:20px;
+    border:.5px solid #63707E;
+    
+    border-radius: 6px;
+    padding:14px 15px;
+    box-sizing:border-box;
+    margin:5px 0px 15px;
+    color:black;
+}
+
+input:focus{
+    background-color:white;
+}
+
+
+
+button{
+    background-color:black;
+    font-size: 20px;
+    color: white;
+    margin-top: 20px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: .5px solid black;
+    width: 100%;
+    
+}
+
+
+.radio input{
+    transform: scale(1.5);
+
+}
+button:hover{
+    color: #eeeeee;
+    transform: scale(.98);
+
+  
+}
+.regform .signin-up{
+    font-size: 20px; 
+    text-align: center;
+}
+.password{
+  position: relative;    
+}
+.password input{
+  width:100%;
+  font-size:20px;
+  border:.5px solid #63707E;
+  
+  border-radius: 6px;
+  padding:14px 15px;
+  box-sizing:border-box;
+  margin:5px 0px 15px;
+  color:black;
+  
+}
+.fa-eye-slash{
+  position:absolute;
+    top:20%;
+  right: 4%;
+  cursor: pointer;
+
+}
+
+.bi{
+  position:absolute;
+  top:20%;
+  right: 4%;
+  cursor: pointer;
+
+}
+.uil {
+    position: absolute; 
+    right: 10px; 
+    top:15px;
+    cursor: pointer; 
+    font-size: 23px; 
+    color: #595757; /* Icon color */
+    transition: all 0.2s ease; /* Smooth transition for hover effects */    
+    z-index: 1; /* Ensure the icon is above the input field */
+}
+#file-upload {
+  display: block;
+}
+
+/* Style for the file name display */
+#file-name {
+  margin-top: 10px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  color: #333; /* Dark gray text */
+}
+
+
+
+@media (max-width: 767px) {
+
+
+    .regform{ 
+
+    
+        width: 300px;
+        background-color:white;
+
+    
+        margin: 40px auto ;
+        color:black;
+        padding: 20px 20px 20px 20px;
+        font-size: 15px;
+        
+    }
+    .regformf{
+      width: 300px;
+        background-color:white;
+
+    
+        margin: 40px auto ;
+        color:black;
+        padding: 20px 20px 20px 20px;
+        font-size: 15px;
+        
+
+    }
+    .logo{
+        text-align: center;
+        font-size: 18px;
+        color:black;
+      }
+      #heading{
+        margin-top:0;
+        color:black;
+        text-align: center;
+        font-size: 22px;
+        
+    }
+
+    button{
+      font-size: 16px;
+    }
+    .input input{
+        font-size: 16px;
+    }
+    .radio input{
+        transform: scale(1.1);
+    }
+    .image-radio-group img{
+        width: 300px;
+      }
+}
+
+#dobError {
+            display: none;
+            color: red;
+        }
+  .error {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #d93025;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            position: relative;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .error::before {
+            font-size: 20px;
+            margin-right: 12px;
+            color: #d93025;
+        }
+
+        .error p {
+            margin: 0;
+        }
